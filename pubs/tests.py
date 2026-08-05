@@ -17,7 +17,7 @@ class TestValidators(TestCase):
 
         with pytest.raises(ValidationError) as excinfo:
             validate_year(600)
-        assert "600 does not match the expected date scope for this project" in str(
+        assert '600 does not match the expected date scope for this project' in str(
             excinfo.value
         )
 
@@ -25,7 +25,7 @@ class TestValidators(TestCase):
             next_year = current_year + 1
             validate_year(next_year)
         assert (
-            f"{next_year} does not match the expected date scope for this project"
+            f'{next_year} does not match the expected date scope for this project'
             in str(excinfo.value)
         )
 
@@ -39,12 +39,12 @@ class TestValidators(TestCase):
 
         with pytest.raises(ValidationError) as excinfo:
             verify_latlon(-181.35214)
-        assert "Latitude or longitude must be between -180 and 180 degrees." in str(
+        assert 'Latitude or longitude must be between -180 and 180 degrees.' in str(
             excinfo.value
         )
 
         with pytest.raises(ValidationError) as excinfo:
             verify_latlon(181.35214)
-        assert "Latitude or longitude must be between -180 and 180 degrees." in str(
+        assert 'Latitude or longitude must be between -180 and 180 degrees.' in str(
             excinfo.value
         )

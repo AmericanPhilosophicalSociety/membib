@@ -5,17 +5,17 @@ from django_edit_away.models import TiptapField
 
 
 ANNOTATORS = {
-        "AM": "Alex Mazzaferro",
-        "JA": "Jeff Appelhans",
-        "EMJ": "Unknown EMJ",
-        "AV": "Unknown AV",
-        "JF": "Julie Fisher",
-        'CP': 'Unknown CP',
-        'SB': 'Unknown SB',
-        'YS': 'Unknown YS',
-        'GS': 'Unknown GS',
-        'CF': 'Unknown CF',
-    }
+    'AM': 'Alex Mazzaferro',
+    'JA': 'Jeff Appelhans',
+    'EMJ': 'Unknown EMJ',
+    'AV': 'Unknown AV',
+    'JF': 'Julie Fisher',
+    'CP': 'Unknown CP',
+    'SB': 'Unknown SB',
+    'YS': 'Unknown YS',
+    'GS': 'Unknown GS',
+    'CF': 'Unknown CF',
+}
 
 
 def validate_year(value):
@@ -23,8 +23,8 @@ def validate_year(value):
     current_year = datetime.now().year
     if value < 1700 or value > current_year:
         raise ValidationError(
-            ("%(value)s does not match the expected date scope for this project"),
-            params={"value": value},
+            ('%(value)s does not match the expected date scope for this project'),
+            params={'value': value},
         )
 
 
@@ -33,7 +33,7 @@ def verify_latlon(value):
     value is a decimal value between -180 and 180."""
     if not -180 <= value <= 180:
         raise ValidationError(
-            "Latitude or longitude must be between -180 and 180 degrees."
+            'Latitude or longitude must be between -180 and 180 degrees.'
         )
 
 
@@ -80,33 +80,35 @@ class Member(models.Model):
 
 class Creator(models.Model):
     label = models.CharField(max_length=200)
-    subject = models.ForeignKey(Subject, blank=True, null=True, on_delete=models.PROTECT)
+    subject = models.ForeignKey(
+        Subject, blank=True, null=True, on_delete=models.PROTECT
+    )
     # TODO: Implement relator more robustly - probably requires loc-authorities patch
     relator = models.CharField(max_length=20)
 
 
 class Publication(models.Model):
     RECORD_SOURCE_CHOICES = {
-        "AAS": "American Antiquarian Society",
-        "APS": "American Philosophical Society",
-        "BNF": "Bibliothèque nationale de France",
-        "CORN": "Cornell Uniersity Library",
-        "ESTC": "English Short Title Catalogue",
-        "FOUNDERS": "Founders Online",
-        "HARV": "Harvard Library",
-        "HSP": "Historical Society of Pennsylvania",
-        "HUNT": "The Huntington",
-        "JCB": "John Carter Brown Library",
-        "LCP": "Library Company of Philadelphia",
-        "LOC": "Library of Congress",
-        "NBY": "The Newberry",
-        "NLM": "National Library of Medicine",
-        "NYHS": "The New York Historical",
-        "NYPL": "New York Public Library",
-        "PENN": "University of Pennsylvania Libraries",
-        "PU": "Princeton University Library",
-        "WC": "Worldcat",
-        "YALE": "Yale Library",
+        'AAS': 'American Antiquarian Society',
+        'APS': 'American Philosophical Society',
+        'BNF': 'Bibliothèque nationale de France',
+        'CORN': 'Cornell Uniersity Library',
+        'ESTC': 'English Short Title Catalogue',
+        'FOUNDERS': 'Founders Online',
+        'HARV': 'Harvard Library',
+        'HSP': 'Historical Society of Pennsylvania',
+        'HUNT': 'The Huntington',
+        'JCB': 'John Carter Brown Library',
+        'LCP': 'Library Company of Philadelphia',
+        'LOC': 'Library of Congress',
+        'NBY': 'The Newberry',
+        'NLM': 'National Library of Medicine',
+        'NYHS': 'The New York Historical',
+        'NYPL': 'New York Public Library',
+        'PENN': 'University of Pennsylvania Libraries',
+        'PU': 'Princeton University Library',
+        'WC': 'Worldcat',
+        'YALE': 'Yale Library',
     }
 
     identifier = models.CharField(max_length=50)
