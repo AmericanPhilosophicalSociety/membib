@@ -10,6 +10,17 @@ def handle_pipe_field(field):
     else:
         return field
 
+def get_subjects(input, publication):
+    if input:
+        subject_ids = input.split("|")
+        for subject_id in subject_ids:
+            try:
+                subject = Subject.objects.get(drupal_tid=subject_id)
+                publication.subjects.add(subject)
+                # print(f"Added association with subject: {subject}")
+            except:
+                print(f"Subject could not be created: id {subject_id}")
+
 def get_members(input, publication):
     # takes a str of pipe-separated member IDs and adds those members to the appropriate object
     member_ids = input.split("|")
@@ -29,7 +40,7 @@ def get_year(field):
     else:
         return None
 
-def get_creator(name, lcsh, relator, publication):
+def get_creators(name, lcsh, relator, publication):
     relators  = {
         'RCP': 'Addressee',
         'ANN': 'Annotator',
@@ -84,10 +95,16 @@ def upload_bib_record():
                 drupal_nid=row["nid"],
                 annotator=handle_pipe_field(row["created_by"]),
             )
-            # subjects
-            # members
-            # creators
-            
+            if created:
+                print(f"Created publication: {row["title"]}")
+
+            get_subjects(row["subjects"], publication)
+            get_members(row["members"], publication)
+
+            # TODO: fix input
+            # do for creator 1 and creator 2
+            # get_creators()
+
             # try:
             #     publication, created = Publication.objects.get_or_create(
             #         identifier=row["bib_number"],
