@@ -111,6 +111,8 @@ class Creator(models.Model):
     # TODO: Implement relator more robustly - probably requires loc-authorities patch
     # this should accept multiple values
     relator = models.CharField(choices=RELATOR_CHOICES, max_length=3)
+    def __str__(self):
+        return self.label
 
 
 class Publication(models.Model):
@@ -155,6 +157,9 @@ class Publication(models.Model):
     drupal_nid = models.PositiveIntegerField(blank=True, null=True, editable=False)
     # TODO: This needs to accept multiple values somehow
     annotator = models.CharField(choices=ANNOTATORS, max_length=3)
+
+    def __str__(self):
+        return self.title[:100]
 
 
 class Edition(models.Model):
