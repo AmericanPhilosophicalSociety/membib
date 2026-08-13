@@ -12,7 +12,7 @@ ANNOTATORS = {
     'JF': 'Julie Fisher',
     'CP': 'Unknown CP',
     'SB': 'Unknown SB',
-    'YS': 'Unknown YS',
+    'YS': 'Yumi Shiroma',
     'GS': 'Unknown GS',
     'CF': 'Unknown CF',
 }
@@ -41,15 +41,17 @@ class Subject(models.Model):
     AUTHORITY_CHOICES = {
         'APS': 'American Philosophical Society',
         'LOC': 'Library of Congress',
+        'LCL': 'Local',
     }
 
     # Question: should this save the URL or just the ID?
     uri = models.CharField(max_length=20, blank=True, null=True)
     heading = models.CharField(max_length=200)
     authority_source = models.CharField(choices=AUTHORITY_CHOICES, max_length=3)
+    drupal_tid = models.PositiveIntegerField(blank=True, null=True, editable=False)
 
     # for complex subjects
-    coponents = models.ManyToManyField(
+    components = models.ManyToManyField(
         'self', blank=True, symmetrical=False, related_name='component_of'
     )
 
@@ -79,12 +81,28 @@ class Member(models.Model):
 
 
 class Creator(models.Model):
+    RELATOR_CHOICES = {
+        'RCP': 'Addressee',
+        'ANN': 'Annotator',
+        'ARR': 'Arranger',
+        'ART': 'Artist',
+        'ATT': 'Attributed name',
+        'AUT': 'Author',
+        'COM': 'Compiler',
+        'CTB': 'Contributor',
+        'EDT': 'Editor',
+        'EGR': 'Engraver',
+        'ILL': 'Illustrator',
+        'LBT': 'Librettist',
+        'TRL': 'Translator',
+    }
     label = models.CharField(max_length=200)
     subject = models.ForeignKey(
         Subject, blank=True, null=True, on_delete=models.PROTECT
     )
     # TODO: Implement relator more robustly - probably requires loc-authorities patch
-    relator = models.CharField(max_length=20)
+    # this should accept multiple values
+    relator = models.CharField(choices=RELATOR_CHOICES, max_length=3)
 
 
 class Publication(models.Model):
@@ -109,6 +127,7 @@ class Publication(models.Model):
         'PU': 'Princeton University Library',
         'WC': 'Worldcat',
         'YALE': 'Yale Library',
+        'NONE': 'None',
     }
 
     identifier = models.CharField(max_length=50)
