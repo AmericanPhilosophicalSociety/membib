@@ -105,6 +105,7 @@ class Creator(models.Model):
     }
     # this should be pulled from subject__heading probably
     label = models.CharField(max_length=200)
+    # require this?
     subject = models.ForeignKey(
         Subject, blank=True, null=True, on_delete=models.PROTECT
     )

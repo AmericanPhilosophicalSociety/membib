@@ -71,7 +71,6 @@ def add_creators(name, lcsh, relator, publication):
 
     publication.creators.add(creator)
     print(f"Creator added: {creator}")
-        # print(f"An error occurred while adding creator: {name}")
 
 def upload_bib_record():
     with open("bib-records.csv", newline="", encoding="utf8") as csvfile:
@@ -107,23 +106,6 @@ def upload_bib_record():
             if row["creator_2_name"] and row["creator_2_relator"]:
                 add_creators(row["creator_2_name"], row["creator_2_lcsh"], row["creator_2_relator"], publication)
 
-            # try:
-            #     publication, created = Publication.objects.get_or_create(
-            #         identifier=row["bib_number"],
-            #         editions_note=row["editions_note"],
-            #         holding_note=row["holding_note"],
-            #         title=row["title"],
-            #         year_published=get_year(row["year"]),
-            #         publication=row["publication"],
-            #         # SUBJECTS
-            #         record_source=row["record_source"],
-            #         references=row["references"],
-            #         aps_record_link=get_first_from_pipe_field(row["aps_permalink"]),
-            #         record_permalink=get_first_from_pipe_field(row["external_permalink"]),
-            #         drupal_nid=row["nid"],
-            #         annotator=get_first_from_pipe_field(row["created_by"]),
-            #     )
-            #     # handle subjects, members, creators
             # except Exception as e:
             #     print(f"Something went wrong while saving member: {row['full_name']}")
             #     print(e)
