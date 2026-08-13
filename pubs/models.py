@@ -103,6 +103,7 @@ class Creator(models.Model):
         'LBT': 'Librettist',
         'TRL': 'Translator',
     }
+    # this should be pulled from subject__heading probably
     label = models.CharField(max_length=200)
     subject = models.ForeignKey(
         Subject, blank=True, null=True, on_delete=models.PROTECT
@@ -139,11 +140,11 @@ class Publication(models.Model):
 
     identifier = models.CharField(max_length=50)
     editions_note = models.TextField(blank=True)
-    holding_note = TiptapField()
+    holding_note = TiptapField(blank=True, null=True)
     members = models.ManyToManyField(Member)
     creators = models.ManyToManyField(Creator)
     title = models.TextField()
-    year_published = models.PositiveIntegerField(validators=[validate_year])
+    year_published = models.PositiveIntegerField(validators=[validate_year], blank=True, null=True)
     publication = models.CharField(max_length=255)
     subjects = models.ManyToManyField(Subject)
     record_source = models.CharField(choices=RECORD_SOURCE_CHOICES, max_length=10)
