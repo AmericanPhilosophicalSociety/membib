@@ -58,16 +58,20 @@ class Subject(models.Model):
     class Meta:
         ordering = ['heading']
 
+    def __str__(self):
+        return self.heading
+
 
 class Member(models.Model):
-    bib_number = models.PositiveIntegerField()
+    # even with these settings, DB won't accept an empty string value - not sure what's going on here. added temp bib IDs for the people still missing them to get the upload to work
+    bib_number = models.PositiveIntegerField(blank=True, null=True, default=None)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     suffix = models.CharField(max_length=50, blank=True)
     # this should actually validate dates for the project, but oh well
     election_date = models.PositiveIntegerField(validators=[validate_year])
     office = models.CharField(max_length=100, blank=True)
-    bio = TiptapField()
+    bio = TiptapField(blank=True, null=True)
     bio_note = models.TextField(blank=True)
     # Once DB is set up, set this to default to a the generic image to reduce storage redundancy
     image = models.ImageField(upload_to='images', default='default.jpg')
@@ -78,6 +82,9 @@ class Member(models.Model):
     created_by = models.CharField(max_length=3, choices=ANNOTATORS, blank=True)
     drupal_nid = models.PositiveIntegerField(blank=True, null=True, editable=False)
     authority_record = models.ForeignKey(Subject, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return f"{self.last_name}, {self.first_name} {self.suffix}"
 
 
 class Creator(models.Model):
