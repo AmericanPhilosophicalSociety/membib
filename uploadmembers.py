@@ -26,8 +26,8 @@ def upload_member():
                     uri=['lcsh_id'],
                     authority_source=authority,
                 )
-                if created:
-                    print(f"Subject created: {row['lcsh']}, authority: {authority}")
+                # if created:
+                #     print(f"Subject created: {row['lcsh']}, authority: {authority}")
 
                 created_by = handle_pipe_field(row["created_by"])
 
@@ -49,6 +49,8 @@ def upload_member():
                     drupal_nid=row["nid"],
                     authority_record=subject,
                 )
+                if created:
+                    print(f"Member created: {row['lcsh']}")
             except Exception as e:
                 print(f"Something went wrong while saving member: {row['full_name']}")
                 print(e)
