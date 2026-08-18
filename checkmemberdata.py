@@ -16,7 +16,7 @@ def check_bib_num(member_from_bib_num, pub, issues):
             issues.append({"nid": pub.drupal_nid, "error": error, "error_num": 2})
 
     if not bib_num_in_members:
-        error = "Member {member} corresponding to bib number {member_from_bib_num.bib_number} not present in members field"
+        error = f"Member {member} corresponding to bib number {member_from_bib_num.bib_number} not present in members field"
         issues.append({"nid": pub.drupal_nid, "error": error, "error_num": 3})
         # issues[pub.drupal_nid] = error
 
@@ -49,7 +49,7 @@ def creator_in_members(creator, pub, issues):
 
         # check if that record appears in the publication's associated members
         if member_from_creator not in pub.members.all():
-            error = f"Creator {creator} appears in creators but not members"
+            error = f"Creator {creator} (member {member_from_creator.drupal_nid}) appears in creators but not members"
             # issues[pub.drupal_nid] = error
             issues.append({"nid": pub.drupal_nid, "error": error, "error_num": 6})
     except:
