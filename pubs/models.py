@@ -84,7 +84,7 @@ class Member(models.Model):
     authority_record = models.ForeignKey(Subject, on_delete=models.PROTECT)
 
     def __str__(self):
-        return f"{self.last_name}, {self.first_name} {self.suffix}"
+        return f"{self.last_name}, {self.first_name} {self.suffix}".strip()
 
 
 class Creator(models.Model):
@@ -112,6 +112,7 @@ class Creator(models.Model):
     # TODO: Implement relator more robustly - probably requires loc-authorities patch
     # this should accept multiple values
     relator = models.CharField(choices=RELATOR_CHOICES, max_length=3)
+
     def __str__(self):
         return self.label
 
