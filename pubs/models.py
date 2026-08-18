@@ -74,7 +74,7 @@ class Member(models.Model):
     bio = TiptapField(blank=True, null=True)
     bio_note = models.TextField(blank=True)
     # Once DB is set up, set this to default to a the generic image to reduce storage redundancy
-    image = models.ImageField(upload_to='images', default='default.jpg')
+    image = models.ImageField(upload_to='images/', default='default.jpg')
     image_alt_text = models.CharField(max_length=255)
     # is this field public facing?
     note = models.TextField(blank=True)
