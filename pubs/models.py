@@ -121,7 +121,7 @@ class Publication(models.Model):
         'AAS': 'American Antiquarian Society',
         'APS': 'American Philosophical Society',
         'BNF': 'Bibliothèque nationale de France',
-        'CORN': 'Cornell Uniersity Library',
+        'CORN': 'Cornell University Library',
         'ESTC': 'English Short Title Catalogue',
         'FOUNDERS': 'Founders Online',
         'HARV': 'Harvard Library',
