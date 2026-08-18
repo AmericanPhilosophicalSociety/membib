@@ -23,7 +23,7 @@ def upload_member():
 
                 subject, created = Subject.objects.get_or_create(
                     heading=row['lcsh'],
-                    uri=['lcsh_id'],
+                    uri=row['lcsh_id'],
                     authority_source=authority,
                 )
                 # if created:
@@ -42,7 +42,8 @@ def upload_member():
                     # bio=row["bio"],
                     # bio="Default bio for testing purposes",
                     bio_note=row["bio_note"],
-                    # do logic for image here
+                    # upload_to is only triggered when uploading from a form or admin
+                    image=f"images/{row['file_name']}",
                     image_alt_text=row["img_alt"],
                     note=row["note"],
                     created_by=created_by,
@@ -52,7 +53,7 @@ def upload_member():
                 if created:
                     print(f"Member created: {row['lcsh']}")
             except Exception as e:
-                print(f"Something went wrong while saving member: {row['full_name']}")
+                print(f"Something went wrong while saving member: {row['lcsh']}")
                 print(e)
 
 def upload():

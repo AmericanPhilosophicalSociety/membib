@@ -40,7 +40,7 @@ def add_members(input, publication):
         print(f"Added association with member: {member}")
     return
 
-def add_creators(name, lcsh, relator, publication):
+def add_creators(name, uri, relator, publication):
     relators  = {
         'RCP': 'Addressee',
         'ANN': 'Annotator',
@@ -56,9 +56,16 @@ def add_creators(name, lcsh, relator, publication):
         'LBT': 'Librettist',
         'TRL': 'Translator',
     }
+
+    if uri:
+        authority="LOC"
+    else:
+        authority="LCL"
+
     subject, created = Subject.objects.get_or_create(
         heading=name,
-        uri=lcsh,
+        uri=uri,
+        authority_source=authority,
     )
 
     creator, created = Creator.objects.get_or_create(
@@ -99,8 +106,7 @@ def upload_bib_record():
             add_subjects(row["aps_subjects"], publication)
             add_members(row["members"], publication)
 
-            # TODO: fix input
-            # do for creator 1 and creator 2
+            # add authority records for creator 1 and creator 2
             if row["creator_1_name"] and row["creator_1_relator"]:
                 add_creators(row["creator_1_name"], row["creator_1_lcsh"], row["creator_1_relator"], publication)
             if row["creator_2_name"] and row["creator_2_relator"]:

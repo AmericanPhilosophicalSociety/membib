@@ -1,9 +1,6 @@
 from pubs.models import Publication, Member, Creator
 import csv
 
-# split this into functions
-# add an error #
-
 def check_bib_num(member_from_bib_num, pub, issues):
     # confirm that member appears in members, flag any members not referenced in bib number
     bib_num_in_members = False
@@ -11,12 +8,12 @@ def check_bib_num(member_from_bib_num, pub, issues):
         if member == member_from_bib_num:
             bib_num_in_members = True
         else:
-            error = f"Member {member} (bib number {member.bib_number}) is referenced in this record but not accounted for in bib_number {member_from_bib_num.bib_number}"
+            error = f"Member {member} ({member.drupal_nid}) appears in members but is not accounted for in bib_number {member_from_bib_num.bib_number}"
             # issues[pub.drupal_nid] = error
             issues.append({"nid": pub.drupal_nid, "error": error, "error_num": 2})
 
     if not bib_num_in_members:
-        error = f"Member {member} corresponding to bib number {member_from_bib_num.bib_number} not present in members field"
+        error = f"Member {member_from_bib_num} ({member_from_bib_num.drupal_nid}) is indicated by bib number but not present in members field"
         issues.append({"nid": pub.drupal_nid, "error": error, "error_num": 3})
         # issues[pub.drupal_nid] = error
 
@@ -33,10 +30,10 @@ def member_in_creators(member, pub, issues, called_by):
     if not member_in_creators:
         if called_by == "search":
             error_num = 4
-            error = f"Member {member} appears in members but not creators"
+            error = f"Member {member} ({member.drupal_nid}) appears in members but not creators"
         else:
             error_num = 5
-            error = f"Member {member} associated with bib number {member.bib_number} does not appear in creators"
+            error = f"Member {member} ({member.drupal_nid}) is indicated by bib number but does not appear in creators"
         # issues[pub.drupal_nid] = error
         issues.append({"nid": pub.drupal_nid, "error": error, "error_num": error_num})
 
