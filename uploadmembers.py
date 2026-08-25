@@ -21,15 +21,21 @@ def upload_member():
                 else:
                     authority="LCL"
 
+                # search by heading THEN add URI and authority because subjects loaded in from subjects.csv don't have URIs attached, causing some member subject authorities to be created twice
                 subject, created = Subject.objects.get_or_create(
                     heading=row['lcsh'],
-                    uri=row['lcsh_id'],
-                    authority_source=authority,
+                    # uri=row['lcsh_id'],
+                    # authority_source=authority,
                 )
+
+                subject.uri = row['lcsh_id']
+                subject.authority_source = authority
+                subject.save()
+
                 # if created:
                 #     print(f"Subject created: {row['lcsh']}, authority: {authority}")
 
-                created_by = handle_pipe_field(row["created_by"])
+                annotator = handle_pipe_field(row["created_by"])
 
                 member, created = Member.objects.get_or_create(
                     bib_number = row["bib_number"],
@@ -46,12 +52,12 @@ def upload_member():
                     image=f"images/{row['file_name']}",
                     image_alt_text=row["img_alt"],
                     note=row["note"],
-                    created_by=created_by,
+                    annotator=annotator,
                     drupal_nid=row["nid"],
                     authority_record=subject,
                 )
-                if created:
-                    print(f"Member created: {row['lcsh']}")
+                # if created:
+                #     print(f"Member created: {row['lcsh']}")
             except Exception as e:
                 print(f"Something went wrong while saving member: {row['lcsh']}")
                 print(e)

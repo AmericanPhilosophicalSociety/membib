@@ -1,6 +1,7 @@
 import csv
-from pubs.models import Member, Subject, Creator, Publication
+from pubs.models import Member, Subject, Creator, Publication, RELATOR_CHOICES
 import re
+
 
 
 def get_first_from_pipe_field(field):
@@ -31,32 +32,28 @@ def add_subjects(input, publication):
             except:
                 print(f"Subject could not be created: id {subject_id}")
 
-def add_members(input, publication):
-    # takes a str of pipe-separated member IDs and adds those members to the appropriate object
-    member_ids = input.split("|")
-    for member_id in member_ids:
-        member = Member.objects.get(drupal_nid=member_id)
-        publication.members.add(member)
-        print(f"Added association with member: {member}")
+def add_members(input, publication, nid):
+    try:
+        # takes a str of pipe-separated member IDs and adds those members to the appropriate object
+        member_ids = input.split("|")
+        for member_id in member_ids:
+            member = Member.objects.get(drupal_nid=member_id)
+            publication.members.add(member)
+            # print(f"Added association with member: {member}")
+    except:
+        print(f"something went wrong while processing record: {nid}")
     return
 
-def add_creators(name, uri, relator, publication):
-    relators  = {
-        'RCP': 'Addressee',
-        'ANN': 'Annotator',
-        'ARR': 'Arranger',
-        'ART': 'Artist',
-        'ATT': 'Attributed name',
-        'AUT': 'Author',
-        'COM': 'Compiler',
-        'CTB': 'Contributor',
-        'EDT': 'Editor',
-        'EGR': 'Engraver',
-        'ILL': 'Illustrator',
-        'LBT': 'Librettist',
-        'TRL': 'Translator',
-    }
+# convert human-readable relator to relator code
+# requires flipping key and value in RELATOR_CHOICES
+def get_relator(input):
+    relators_reversed = {}
+    for k, v in RELATOR_CHOICES.items():
+        relators_reversed[v] = k
 
+    return relators_reversed[input]
+
+def add_creators(name, uri, relators_all, publication):
     if uri:
         authority="LOC"
     else:
@@ -68,16 +65,19 @@ def add_creators(name, uri, relator, publication):
         authority_source=authority,
     )
 
-    creator, created = Creator.objects.get_or_create(
-        # TODO: pull this from subject instead
-        label=name,
-        subject=subject,
-        # TODO: change this to get actual value
-        relator="AUT",
-    )
+    relators = relators_all.split("|")
 
-    publication.creators.add(creator)
-    print(f"Creator added: {creator}")
+    # in the case of multiple relators, add that creator multiple times
+    for relator in relators:
+        creator, created = Creator.objects.get_or_create(
+            # TODO: pull this from subject instead
+            label=name,
+            subject=subject,
+            relator=get_relator(relator),
+        )
+
+        publication.creators.add(creator)
+        # print(f"Creator added: {creator}")
 
 def upload_bib_record():
     with open("bib-records.csv", newline="", encoding="utf8") as csvfile:
@@ -91,7 +91,6 @@ def upload_bib_record():
                 title=row["title"],
                 year_published=get_year(row["year"]),
                 publication=row["publication"],
-                # SUBJECTS
                 record_source=row["record_source"],
                 references=row["references"],
                 aps_record_link=get_first_from_pipe_field(row["aps_permalink"]),
@@ -99,12 +98,12 @@ def upload_bib_record():
                 drupal_nid=row["nid"],
                 annotator=get_first_from_pipe_field(row["created_by"]),
             )
-            if created:
-                print(f"Created publication: {row["title"]}")
+            # if created:
+            #     print(f"Created publication: {row["title"]}")
 
             add_subjects(row["subjects"], publication)
             add_subjects(row["aps_subjects"], publication)
-            add_members(row["members"], publication)
+            add_members(row["members"], publication, row["nid"])
 
             # add authority records for creator 1 and creator 2
             if row["creator_1_name"] and row["creator_1_relator"]:

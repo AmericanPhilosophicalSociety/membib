@@ -17,6 +17,23 @@ ANNOTATORS = {
     'CF': 'Unknown CF',
 }
 
+RELATOR_CHOICES = {
+    'RCP': 'Addressee',
+    'ANN': 'Annotator',
+    'ARR': 'Arranger',
+    'ART': 'Artist',
+    'ATT': 'Attributed name',
+    'AUT': 'Author',
+    'COM': 'Compiler',
+    'CTB': 'Contributor',
+    'EDT': 'Editor',
+    'EGR': 'Engraver',
+    'ILL': 'Illustrator',
+    'LBT': 'Librettist',
+    'PRT': 'Printer',
+    'TRL': 'Translator',
+}
+
 
 def validate_year(value):
     """Ensure that years entered are plausible"""
@@ -79,7 +96,7 @@ class Member(models.Model):
     # is this field public facing?
     note = models.TextField(blank=True)
     # need to remediate to allow multiples
-    created_by = models.CharField(max_length=3, choices=ANNOTATORS, blank=True)
+    annotator = models.CharField(max_length=3, choices=ANNOTATORS, blank=True)
     drupal_nid = models.PositiveIntegerField(blank=True, null=True, editable=False)
     authority_record = models.ForeignKey(Subject, on_delete=models.PROTECT)
 
@@ -88,21 +105,6 @@ class Member(models.Model):
 
 
 class Creator(models.Model):
-    RELATOR_CHOICES = {
-        'RCP': 'Addressee',
-        'ANN': 'Annotator',
-        'ARR': 'Arranger',
-        'ART': 'Artist',
-        'ATT': 'Attributed name',
-        'AUT': 'Author',
-        'COM': 'Compiler',
-        'CTB': 'Contributor',
-        'EDT': 'Editor',
-        'EGR': 'Engraver',
-        'ILL': 'Illustrator',
-        'LBT': 'Librettist',
-        'TRL': 'Translator',
-    }
     # this should be pulled from subject__heading probably
     label = models.CharField(max_length=200)
     # require this?

@@ -13,8 +13,8 @@ def upload_aps_subject():
                     authority_source='APS',
                     drupal_tid=row['nid']
                 )
-                if created:
-                    print(f"Subject created: {row['title']}, authority: APS")
+                # if created:
+                #     print(f"Subject created: {row['title']}, authority: APS")
             except:
                 print(f"Something went wrong while saving subject: {row['title']}")
 
@@ -31,8 +31,8 @@ def upload_subject():
                     authority_source='LOC',
                     drupal_tid=row['nid']
                 )
-                if created:
-                    print(f"Subject created: {row['heading']}, authority: LOC")
+                # if created:
+                #     print(f"Subject created: {row['heading']}, authority: LOC")
             except:
                 print(f"Something went wrong while saving subject: {row['heading']}")
 
